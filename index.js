@@ -10,7 +10,7 @@
  */
 
 
-const createEmployeeRecord = (arr) => {
+function createEmployeeRecord(arr) {
     const employee = {
         firstName:arr[0],
         familyName:arr[1],
@@ -22,37 +22,33 @@ const createEmployeeRecord = (arr) => {
     return employee
 }
 
-const createEmployeeRecords = (arrOfArrs) => {
+function createEmployeeRecords(arrOfArrs) {
     return arrOfArrs.map(record => createEmployeeRecord(record))
 }
 
-const createTimeInEvent = (timeStamp) => {
+function createTimeInEvent(timeStamp) {
     const time = timeStamp.split(" ")
-    const event = {type:"TimeIn", hour: time[1], date: time[0]}
-    console.log(this)
-    //console.log(this.timeInEvents)
-    console.log(typeof this.timeInEvents)
-    //console.log(bpRecord)
-    //this.timeInEvents.push(event)
+    const event = {type:"TimeIn", hour: parseInt(time[1]), date: time[0]}
+    this.timeInEvents.push(event)
+    return this
 }
 
-const createTimeOutEvent = (timeStamp) => {
-    const event = {type:"TimeOut", hour: time[1], date: time[0]} 
-    this.timeOutEvents.push()
+function createTimeOutEvent(timeStamp) {
+    const time = timeStamp.split(" ")
+    const event = {type:"TimeOut", hour: parseInt(time[1]), date: time[0]}
+    this.timeOutEvents.push(event)
+    return this
 }
-const hoursWorkedOnDate = (date) => {
-
+function hoursWorkedOnDate(date) {
+    const inEvent = this.timeInEvents.find(event => event.date === date)
+    const outEvent = this.timeOutEvents.find(event => event.date === date)
+    return (outEvent.hour - inEvent.hour)/100
 }
 
-
-let bpRecord = createEmployeeRecord(["Byron", "Poodle", "Mascot", 3])
-console.log(bpRecord)
-let updatedBpRecord = createTimeInEvent.call(bpRecord, "2014-02-28 1400")
-//let newEvent = updatedBpRecord.timeInEvents[0]
-
-
-
-
+function wagesEarnedOnDate(date) {
+    const hours = hoursWorkedOnDate.call(this, date)
+    return hours * this.payPerHour
+}
 
 
 let allWagesFor = function () {
@@ -65,4 +61,13 @@ let allWagesFor = function () {
     }.bind(this), 0) // <== Hm, why did we need to add bind() there? We'll discuss soon!
 
     return payable
+}
+
+function findEmployeeByFirstName(array, name) {
+    return array.find(employee => employee.firstName == name)
+}
+
+function calculatePayroll(array) {
+    const totals = array.map(record => allWagesFor.call(record))
+    return totals.reduce((total, element) => total + element)
 }
